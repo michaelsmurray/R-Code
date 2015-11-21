@@ -1,0 +1,81 @@
+---
+title: "Delhi Regression Tuning 11.12.15"
+author: "Michael Murray"
+date: "November 12, 2015"
+output: word_document
+---
+
+```{r, echo=FALSE}
+setwd("~/Spatial Segmentation/India")
+delhi <- read.csv("delhi.csv")
+```
+
+### Standard Regression with a dummy variable for large ( > 500 units) buildings
+#### Large buildings appear to be a large amenity
+```{r}
+head(delhi$large.building)
+delhi.lm.poi <- lm(hp ~ rooms + property + Connaught.Place + Nehru.Place + Laxmi.Nagar +airport + bar + cemetery + golf + industrial +
+                     parking + petrol + tourist + amusement + bus +
+                     community + highered + library + parkinglot +
+                     train + police + animal + business + commuterrail +
+                     hospital + performingarts + school + park + large.building, data = delhi)
+
+summary(delhi.lm.poi)
+```
+
+### Remove CBD3/Laxmi Nagar because it was showing up as a disamenity
+#### Removal causes Nehru Place to appear as a disamenity
+```{r}
+delhi.lm.poi2 <- lm(hp ~ rooms + property + Connaught.Place + Nehru.Place +
+                     airport + bar + cemetery + golf + industrial +
+                     parking + petrol + tourist + amusement + bus +
+                     community + highered + library + parkinglot +
+                     train + police + animal + business + commuterrail +
+                     hospital + performingarts + school + park + large.building, data = delhi)
+
+summary(delhi.lm.poi2)
+
+anova(delhi.lm.poi,delhi.lm.poi2)
+```
+
+### Using VIF, aside from the CBDs - airport, animal, and performingarts contribute the most to multicollinearity
+### Without "animal"
+```{r}
+delhi.lm.poi3 <- lm(hp ~ rooms + property + Connaught.Place + Nehru.Place + Laxmi.Nagar + airport + bar + cemetery + golf + industrial +
+                     parking + petrol + tourist + amusement + bus +
+                     community + highered + library + parkinglot +
+                     train + police + business + commuterrail +
+                     hospital + performingarts + school + park + large.building, data = delhi)
+
+summary(delhi.lm.poi3)
+```
+#### without "performingarts"
+```{r}
+delhi.lm.poi4 <- lm(hp ~ rooms + property + Connaught.Place + Nehru.Place + Laxmi.Nagar + airport + bar + cemetery + golf + industrial +
+                     parking + petrol + tourist + amusement + bus +
+                     community + highered + library + parkinglot +
+                     train + police + animal + business + commuterrail +
+                     hospital + school + park + large.building, data = delhi)
+summary(delhi.lm.poi4)
+```
+#### without "airport"
+```{r}
+delhi.lm.poi5 <- lm(hp ~ rooms + property + Connaught.Place + Nehru.Place + Laxmi.Nagar + bar + cemetery + golf + industrial +
+                     parking + petrol + tourist + amusement + bus +
+                     community + highered + library + parkinglot +
+                     train + police + animal + business + commuterrail +
+                     hospital + performingarts + school + park + large.building, data = delhi)
+
+summary(delhi.lm.poi5)
+```
+#### without all three
+```{r}
+delhi.lm.poi6 <- lm(hp ~ rooms + property + Connaught.Place + Nehru.Place + Laxmi.Nagar + bar + cemetery + golf + industrial +
+                     parking + petrol + tourist + amusement + bus +
+                     community + highered + library + parkinglot +
+                     train + police + business + commuterrail +
+                     hospital + school + park + large.building, data = delhi)
+
+summary(delhi.lm.poi6)
+```
+

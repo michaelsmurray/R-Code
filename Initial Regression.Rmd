@@ -1,0 +1,41 @@
+---
+title: "Delhi Hedonic Regression"
+author: "Michael Murray"
+date: "November 2, 2015"
+output: word_document
+---
+
+### Load Data
+```{r, echo = FALSE}
+setwd("~/Spatial Segmentation/Actual Data")
+
+delhi <- read.csv("delhi1022.csv")
+
+library(geosphere)
+```
+
+### Add CBD
+```{r, echo = FALSE}
+delhi$CBD.lat <- 28.632778
+delhi$CBD.lon <- 77.219722
+
+p1 <- matrix(c(delhi$Longitude,delhi$Latitude),nrow=length(delhi$Longitude),ncol=2)
+p2 <- matrix(c(delhi$CBD.lon,delhi$CBD.lat),nrow=length(delhi$Longitude),ncol=2)
+
+CBD <- distHaversine(p1,p2)
+
+delhi <- data.frame(delhi, CBD)
+```
+
+
+### Run Regression
+```{r}
+delhi.lm.poi <- lm(hp ~ rooms + property + CBD +
+                     airport + bar + cemetery + golf + industrial +
+                     parking + petrol + tourist + amusement + bus +
+                     community + highered + library + parkinglot +
+                     train + police + animal + business + commuterrail +
+                     hospital + performingarts + school + park, data = delhi)
+
+summary(delhi.lm.poi)
+```

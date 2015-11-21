@@ -1,0 +1,45 @@
+---
+title: "Delhi Regression - Structural Variables"
+author: "Michael Murray"
+date: "November 5, 2015"
+output: word_document
+---
+
+### Load data
+```{r}
+setwd("~/Spatial Segmentation/Actual Data")
+
+delhi <- read.csv("delhi.csv")
+
+```
+
+### Remove outliers
+```{r}
+delhi2 <- delhi[-280,]
+delhi3 <- delhi[-35737,]
+delhi4 <- delhi[-35735,]
+delhi5 <- delhi2[-35737,]
+delhi5 <- delhi5[-35735,]
+```
+
+### Run Regression with all variables
+
+```{r}
+delhi.lm.poi <- lm(log(hp) ~ rooms + property + CBD + CBD2 + CBD3 +
+                     airport + bar + cemetery + golf + industrial +
+                     parking + petrol + tourist + amusement + bus +
+                     community + highered + library + parkinglot +
+                     train + police + animal + business + commuterrail +
+                     hospital + performingarts + school + park, data = delhi5)
+
+summary(delhi.lm.poi)
+```
+
+
+### Regression with only structural variables
+
+```{r}
+delhi.lm.poi2 <- lm(log(hp) ~ rooms + property, data = delhi5)
+
+summary(delhi.lm.poi2)
+```

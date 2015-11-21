@@ -1,0 +1,33 @@
+---
+title: "11.9.15"
+author: "Michael Murray"
+date: "November 9, 2015"
+output: word_document
+---
+
+```{r}
+setwd("~/Spatial Segmentation/Actual Data")
+library(car)
+
+delhi <- read.csv("delhi.csv")
+delhi2 <- delhi[-280,]
+delhi5 <- delhi2[-35737,]
+delhi5 <- delhi5[-35735,]
+```
+
+```{r}
+delhi.lm.poi <- lm(hp ~ rooms + property + Connaught.Place + Nehru.Place + Laxmi.Nagar +
+                     airport + bar + cemetery + golf + industrial +
+                     parking + petrol + tourist + amusement + bus +
+                     community + highered + library + parkinglot +
+                     train + police + animal + business + commuterrail +
+                     hospital + performingarts + school + park, data = delhi)
+
+summary(delhi.lm.poi)
+```
+
+### Assess multicollinearity 
+```{r}
+vif(delhi.lm.poi)
+sqrt(vif(delhi.lm.poi)) > 2
+```
